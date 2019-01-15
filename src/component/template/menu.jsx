@@ -6,13 +6,13 @@ export default props => (
     <Link to='/' className='navbar-brand'>Logo</Link>
     <ul className='navbar-nav'>
       <li className='nav-item'>
-        <Link to='/users'>Link 3</Link>
+        <Link to='/users'>User</Link>
       </li>
       <li className='nav-item'>
-        <Link to='/users'>Link 3</Link>
+        <Link to='/championship'>Championship</Link>
       </li>
       <li className='nav-item'>
-        <Link to='/users'>Link 3</Link>
+        <Link to='/users'>Matches</Link>
       </li>
     </ul>
   </nav>

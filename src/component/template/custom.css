@@ -7,10 +7,10 @@
     color: #777;
 }
 
-.todoForm{
-    padding-bottom: 70px;
+.page-header{
+    margin: 30px 0;
 }
 
 .actionsColumn{
-    width: 105px;
+    width: 200px;
 }

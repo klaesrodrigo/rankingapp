@@ -1,11 +1,10 @@
 import React, { Component } from 'react'
 import IconButton from '../template/iconButton'
-import If from '../helpers/if'
+import GenericList from '../template/genericList'
 import axios from 'axios'
 import { Redirect } from 'react-router-dom'
-import GenericList from '../template/genericList'
 
-const baseURL = 'http://api-navetest.herokuapp.com/v1'
+const baseURL = 'http://api-navetest.herokuapp.com/v1/championships'
 const token = window.localStorage.getItem('token')
 const config = {
   headers: {
@@ -18,11 +17,10 @@ const initialState = {
   list: [],
   id: '',
   redirect: false,
-  update: false,
-  ok: false
+  update: false
 }
 
-export default class ListUsers extends Component {
+export default class ListChampionship extends Component {
   constructor (props) {
     super(props)
     this.state = { ...initialState }
@@ -35,31 +33,29 @@ export default class ListUsers extends Component {
   }
 
   handleSearch () {
-    axios.get(`${baseURL}/users`, config).then(resp => {
+    axios.get(`${baseURL}`, config).then(resp => {
       console.log(resp.data)
-      this.setState({ ...this.state, list: resp.data, ok: true })
+      this.setState({ ...this.state, list: resp.data })
     })
   }
 
-  handleRemove (user) {
-    axios.delete(`${baseURL}/users/${user.id}`, config)
+  handleRemove (champ) {
+    axios.delete(`${baseURL}/${champ.id}`, config)
       .then(resp => this.handleSearch())
   }
 
-  handleUpdate (user) {
-    this.setState({ ...this.state, update: true, id: user.id })
+  handleUpdate (champ) {
+    this.setState({ ...this.state, update: true, id: champ.id })
   }
 
   renderRows () {
     const list = this.state.list || []
-
-    return list.map(user => (
-      <tr key={user.id}>
-        <td>{user.name}</td>
-        <td>{user.rating}</td>
-        <td>
-          <IconButton estilo='warning' icon='edit' onClick={() => this.handleUpdate(user)} />
-          <IconButton estilo='danger' icon='trash-o' onClick={() => this.handleRemove(user)} />
+    return list.map(champ => (
+      <tr key={champ.id}>
+        <td>{champ.name}</td>
+        <td className='actionsColumn'>
+          <IconButton estilo='warning' icon='edit' onClick={() => this.handleUpdate(champ)} />
+          <IconButton estilo='danger' icon='trash-o' onClick={() => this.handleRemove(champ)} />
         </td>
       </tr>
     ))
@@ -70,11 +66,10 @@ export default class ListUsers extends Component {
       return <Redirect to={`create?id=${this.state.id}`} />
     }
     return (
-      <table className='table'>
+      <table className='table todoForm'>
         <thead>
           <tr>
             <th>Nome</th>
-            <th>Pontuação</th>
             <th className='tableActions'>Ações</th>
           </tr>
         </thead>
