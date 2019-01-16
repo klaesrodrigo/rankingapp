@@ -8,7 +8,7 @@ export default props => (
   <div>
     <Menu />
     <div className='container'>
-      <PageHeader name='Lista' small='usuários' />
+      <PageHeader name='Lista' small='Campeonatos' />
       <ListChampionship />
     </div>
   </div>

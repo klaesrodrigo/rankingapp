@@ -4,27 +4,48 @@ import IconButton from './iconButton'
 export default class GenericField extends Component {
   constructor (props) {
     super(props)
-    this.state = { list: props.data, btConfig: props.btConfig }
-    console.log(this.props.data)
-    console.log(this.state)
-  }
-
-  renderFild (data) {
-    const list = data
-    return list.map(item => (<td>{item}</td>))
+    this.state = { list: props.dado, btConfig: props.btConfig, keys: props.keys }
   }
 
   renderButton (data, btConfig) {
-    btConfig.map(item => (<IconButton estilo={item.estilo} icon={item.icon} onClick={item.func} />))
+    const config = btConfig
+    return config.map((item, key) => (<IconButton key={key} estilo={item.estilo} icon={item.icon} onClick={() => item.func(data)} />))
+  }
+
+  componentDidUpdate (prevProps, prevState) {
+    if (prevProps.dado !== this.state.list) {
+      this.setState({ ...this.state, list: prevProps.dado })
+    }
+  }
+
+  renderTds (item, data) {
+    const keys = data
+    return (
+      keys.map((value, key) => {
+        return (<td key={key}>{item[value]}</td>)
+      })
+    )
+  }
+
+  renderTrs () {
+    const list = this.state.list || []
+    const config = this.state.btConfig
+    const keys = this.state.keys
+    return list.map(item => (
+      <tr key={item.id}>
+        {this.renderTds(item, keys)}
+        <td className='actionsColumn'>
+          {this.renderButton(item, config)}
+        </td>
+      </tr>
+    ))
   }
 
   render () {
-    const list = this.state.list || []
-    return (list.map(data => (
-      <tr key={data.id}>
-        {this.renderFild(data)}
-        <td />
-      </tr>
-    )))
+    return (
+      <tbody>
+        {this.renderTrs()}
+      </tbody>
+    )
   }
 }

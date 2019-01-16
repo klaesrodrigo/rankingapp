@@ -1,7 +1,7 @@
 import React from 'react'
 import Menu from '../template/menu'
 import PageHeader from '../template/pageHeader'
-import ListUsers from '../user/listUsers'
+import ListUsers from '../user/usersList'
 
 export default props => (
   <div>

@@ -14,3 +14,11 @@
 .actionsColumn{
     width: 200px;
 }
+
+.form{
+    margin-bottom: 30px;
+}
+
+.form .btn{
+    margin-left: 10px;
+}

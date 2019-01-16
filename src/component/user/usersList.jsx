@@ -34,6 +34,10 @@ export default class ListUsers extends Component {
     this.handleSearch()
   }
 
+  componentDidMount () {
+    this.handleSearch()
+  }
+
   handleSearch () {
     axios.get(`${baseURL}/users`, config).then(resp => {
       console.log(resp.data)
@@ -50,19 +54,34 @@ export default class ListUsers extends Component {
     this.setState({ ...this.state, update: true, id: user.id })
   }
 
+  // renderRows () {
+  //   const list = this.state.list || []
+
+  //   return list.map(user => (
+  //     <tr key={user.id}>
+  //       <td>{user.name}</td>
+  //       <td>{user.rating}</td>
+  //       <td>
+  //         <IconButton estilo='warning' icon='edit' onClick={() => this.handleUpdate(user)} />
+  //         <IconButton estilo='danger' icon='trash-o' onClick={() => this.handleRemove(user)} />
+  //       </td>
+  //     </tr>
+  //   ))
+  // }
+
   renderRows () {
     const list = this.state.list || []
-
-    return list.map(user => (
-      <tr key={user.id}>
-        <td>{user.name}</td>
-        <td>{user.rating}</td>
-        <td>
-          <IconButton estilo='warning' icon='edit' onClick={() => this.handleUpdate(user)} />
-          <IconButton estilo='danger' icon='trash-o' onClick={() => this.handleRemove(user)} />
-        </td>
-      </tr>
-    ))
+    const btConfig = [{
+      estilo: 'warning',
+      icon: 'edit',
+      func: this.handleUpdate
+    }, {
+      estilo: 'danger',
+      icon: 'trash-o',
+      func: this.handleRemove
+    }]
+    const keys = ['name', 'rating']
+    return <GenericList dado={list || []} btConfig={btConfig} keys={keys} />
   }
 
   render () {
@@ -78,9 +97,7 @@ export default class ListUsers extends Component {
             <th className='tableActions'>Ações</th>
           </tr>
         </thead>
-        <tbody>
-          {this.renderRows()}
-        </tbody>
+        {this.renderRows()}
       </table>
     )
   }
