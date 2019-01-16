@@ -41,9 +41,10 @@ export default class ListChampionship extends Component {
   }
 
   handleSearch (description = '') {
-    axios.get(`${baseURL}`, config).then(resp => {
-      this.setState({ ...this.state, description, list: resp.data, ok: true })
-    })
+    axios.get(`${baseURL}`, config)
+      .then(resp =>
+        this.setState({ ...this.state, description, list: resp.data })
+      )
   }
 
   handleRemove (champ) {
@@ -58,11 +59,7 @@ export default class ListChampionship extends Component {
   handleAdd () {
     const data = { name: this.state.championship }
     axios.post(`${baseURL}`, data, config)
-      .then(resp => this.refresh())
-  }
-
-  refresh () {
-    this.handleSearch(this.state.description)
+      .then(resp => this.handleSearch())
   }
 
   componentDidMount () {
@@ -99,7 +96,7 @@ export default class ListChampionship extends Component {
         <div role='form' className='form d-flex'>
           <input id='championship'
             className='form-control w-75'
-            onChange={(e) => this.updateField(e)}
+            onChange={this.updateField}
             placeholder='Adicione um campeonato'
             value={this.state.championship} />
           <IconButton estilo='primary' icon='plus'
