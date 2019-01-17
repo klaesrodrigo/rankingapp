@@ -36,20 +36,21 @@ export default class ListChampionship extends Component {
     this.handleSearch()
   }
 
+  handleSearch (championship = '') {
+    axios.get(`${baseURL}`, config)
+      .then(resp => {
+        return (this.setState({ ...this.state, championship, list: resp.data }))
+      }
+      )
+  }
+
   updateField (event) {
     this.setState({ ...this.state, championship: event.target.value })
   }
 
-  handleSearch (description = '') {
-    axios.get(`${baseURL}`, config)
-      .then(resp =>
-        this.setState({ ...this.state, description, list: resp.data })
-      )
-  }
-
   handleRemove (champ) {
     axios.delete(`${baseURL}/${champ.id}`, config)
-      .then(resp => this.handleSearch())
+      .then(resp => this.handleSearch(this.state.championship))
   }
 
   handleUpdate (champ) {
@@ -67,13 +68,15 @@ export default class ListChampionship extends Component {
   }
 
   componentDidUpdate (prevProps, prevState) {
+    console.table(prevState.list)
+    console.table(this.state.list)
     if (prevState.list !== this.state.list) {
-      this.renderRows()
+      this.setState({ ...this.state })
     }
   }
 
   renderRows () {
-    const list = this.state.list || []
+    // const list = this.state.list || []
     const btConfig = [{
       estilo: 'warning',
       icon: 'edit',
@@ -84,7 +87,7 @@ export default class ListChampionship extends Component {
       func: (data) => this.handleRemove(data)
     }]
     const keys = ['name']
-    return <GenericList dado={list || []} btConfig={btConfig} keys={keys} />
+    return <GenericList dado={this.state.list || []} btConfig={btConfig} keys={keys} />
   }
 
   render () {
@@ -92,26 +95,15 @@ export default class ListChampionship extends Component {
       return <Redirect to={`create?id=${this.state.id}`} />
     }
     return (
-      <div>
-        <div role='form' className='form d-flex'>
-          <input id='championship'
-            className='form-control w-75'
-            onChange={this.updateField}
-            placeholder='Adicione um campeonato'
-            value={this.state.championship} />
-          <IconButton estilo='primary' icon='plus'
-            onClick={this.handleAdd} />
-        </div>
-        <table className='table'>
-          <thead>
-            <tr>
-              <th>Nome</th>
-              <th className='tableActions'>Ações</th>
-            </tr>
-          </thead>
-          {this.renderRows()}
-        </table>
-      </div>
+      <table className='table'>
+        <thead>
+          <tr>
+            <th>Nome</th>
+            <th className='tableActions'>Ações</th>
+          </tr>
+        </thead>
+        {this.renderRows()}
+      </table>
     )
   }
 }

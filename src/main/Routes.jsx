@@ -12,5 +12,6 @@ export default props =>
     <Route path='/users' component={Users} />
     <Route path='/create' component={CreateUser} />
     <Route path='/championship' component={Championship} />
+
     <Redirect from='*' to='/login' />
   </Switch>
