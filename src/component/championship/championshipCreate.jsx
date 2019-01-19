@@ -16,7 +16,8 @@ const config = {
 const initialState = {
   list: [],
   id: '',
-  championship: ''
+  championship: '',
+  players: []
 }
 
 export default class ListChampionship extends Component {
@@ -27,8 +28,29 @@ export default class ListChampionship extends Component {
     this.renderRows = this.renderRows.bind(this)
     this.updateField = this.updateField.bind(this)
     this.handleAdd = this.handleAdd.bind(this)
+    this.addUserInChamp = this.addUserInChamp.bind(this)
+    this.removeUserInChamp = this.removeUserInChamp.bind(this)
 
     this.handleSearch()
+  }
+
+  componentDidMount () {
+    this.handleSearch()
+  }
+
+  componentDidUpdate (prevProps, prevState) {
+    console.table(this.state.players)
+    console.table(this.state.list)
+    if (prevState.list !== this.state.list) {
+      this.setState({ ...this.state })
+    }
+    if (prevState.players !== this.state.players) {
+      this.setState({ ...this.state })
+    }
+  }
+
+  updateField (event) {
+    this.setState({ ...this.state, championship: event.target.value })
   }
 
   handleSearch (championship = '') {
@@ -39,26 +61,29 @@ export default class ListChampionship extends Component {
       )
   }
 
-  updateField (event) {
-    this.setState({ ...this.state, championship: event.target.value })
-  }
-
   handleAdd () {
     const data = { name: this.state.championship }
     axios.post(`${baseURL}/championships`, data, config)
       .then(resp => this.handleSearch())
   }
 
-  componentDidMount () {
-    this.handleSearch()
+  addUserInChamp (user) {
+    let newList = this.removeUser(this.state.list, user)
+    console.log(user)
+    this.setState({ ...this.state, list: newList, players: [...this.state.players, user] })
   }
 
-  componentDidUpdate (prevProps, prevState) {
-    console.table(prevState.list)
-    console.table(this.state.list)
-    if (prevState.list !== this.state.list) {
-      this.setState({ ...this.state })
-    }
+  removeUserInChamp (user) {
+    let newList = this.removeUser(this.state.players, user)
+    console.log(user)
+    this.setState({ ...this.state, players: newList, list: [...this.state.list, user] })
+  }
+
+  removeUser (list, user) {
+    let array = list
+    let index = array.indexOf(user) // Let's say it's Bob.
+    array.splice(index, 1)
+    return array
   }
 
   renderRows () {
@@ -66,10 +91,20 @@ export default class ListChampionship extends Component {
     const btConfig = [{
       estilo: 'secondary',
       icon: 'plus',
-      func: (data) => this.handleUpdate(data)
+      func: (data) => this.addUserInChamp(data)
     }]
     const keys = ['name']
     return <GenericList dado={this.state.list || []} btConfig={btConfig} keys={keys} />
+  }
+
+  renderPlayers () {
+    const btConfig = [{
+      estilo: 'danger',
+      icon: 'minus',
+      func: (data) => this.removeUserInChamp(data)
+    }]
+    const keys = ['name']
+    return <GenericList dado={this.state.players || []} btConfig={btConfig} keys={keys} />
   }
 
   render () {
@@ -84,15 +119,30 @@ export default class ListChampionship extends Component {
           <IconButton estilo='primary' icon='plus'
             onClick={this.handleAdd} />
         </div>
-        <table className='table table-striped'>
-          <thead>
-            <tr>
-              <th>Nome</th>
-              <th className='tableActions'>Ações</th>
-            </tr>
-          </thead>
-          {this.renderRows()}
-        </table>
+        <div className='d-flex'>
+          <h3 className='w-50'>Jogadores</h3>
+          <h3>Jogadores no Camp.</h3>
+        </div>
+        <div className='d-flex'>
+          <table className='table table-striped w-50'>
+            <thead>
+              <tr>
+                <th>Nome</th>
+                <th className='tableActions'>Ações</th>
+              </tr>
+            </thead>
+            {this.renderRows()}
+          </table>
+          <table className='table table-striped w-50'>
+            <thead>
+              <tr>
+                <th>Nome</th>
+                <th className='tableActions'>Ações</th>
+              </tr>
+            </thead>
+            {this.renderPlayers()}
+          </table>
+        </div>
       </div>
     )
   }
