@@ -34,7 +34,6 @@ export default class CreateUser extends Component {
 
   updateField (event) {
     const user = { ...this.state.user }
-    console.log(event.target.name)
     user[event.target.name] = event.target.value
     this.setState({ user })
   }
@@ -43,9 +42,7 @@ export default class CreateUser extends Component {
     const token = window.localStorage.getItem('token')
     config.headers.Authorization = `Bearer ${token}`
     axios.get(`${baseURL}/users/${this.state.id}`, config).then(resp => {
-      console.log(resp.data)
       this.setState({ ...this.state, user: resp.data, password: '' })
-      console.log(this.state.user)
     })
   }
 
@@ -86,23 +83,28 @@ export default class CreateUser extends Component {
     return (
       <div className='container d-flex vw-100 vh-100 justify-content-center align-items-center'>
         <form className='w-50'>
+
           <div className='form-group'>
+            <label htmlFor='name'>Nome:</label>
             <input type='text' className='form-control' id='name' name='name'
-              placeholder='Nome:' onChange={e => this.updateField(e)} value={this.state.user.name} />
+              placeholder='Nome' onChange={e => this.updateField(e)} value={this.state.user.name} />
           </div>
           <div className='form-group'>
+            <label htmlFor='email'> E-mail:</label>
             <input type='email' className='form-control' id='email' name='email'
-              placeholder='Email:' onChange={e => this.updateField(e)} value={this.state.user.email} />
+              placeholder='Email' onChange={e => this.updateField(e)} value={this.state.user.email} />
           </div>
           <If test={this.state.id === ''}>
             <div className='form-group'>
+              <label htmlFor='password'> Senha:</label>
               <input type='password' className='form-control' id='password' name='password'
-                placeholder='Senha:' onChange={e => this.updateField(e)} value={this.state.user.password} />
+                placeholder='Senha' onChange={e => this.updateField(e)} value={this.state.user.password} />
             </div>
           </If>
           <div className='form-group'>
+            <label htmlFor='rating'> Pontuação: </label>
             <input type='text' className='form-control' id='rating' name='rating'
-              placeholder='Pontuação:' onChange={e => this.updateField(e)} value={this.state.user.rating} />
+              placeholder='Pontuação' onChange={e => this.updateField(e)} value={this.state.user.rating} />
           </div>
           <If test={this.state.id === ''}>
             <button type='submit' className='btn btn-success' onClick={this.siginup}>Cadastrar</button>

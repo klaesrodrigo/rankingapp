@@ -9,7 +9,12 @@ export default class GenericField extends Component {
 
   renderButton (data, btConfig) {
     const config = btConfig
-    return config.map((item, key) => (<IconButton key={key} estilo={item.estilo} icon={item.icon} onClick={() => item.func(data)} />))
+    if (btConfig) {
+      return config.map(
+        (item, key) => (<IconButton key={key}
+          estilo={item.estilo} icon={item.icon}
+          onClick={() => item.func(data)} hide={item.hide} />))
+    }
   }
 
   componentDidUpdate (prevProps, prevState) {
@@ -31,14 +36,22 @@ export default class GenericField extends Component {
     const list = this.state.list || []
     const config = this.state.btConfig
     const keys = this.state.keys
-    return list.map(item => (
-      <tr key={item.id}>
-        {this.renderTds(item, keys)}
-        <td className='actionsColumn'>
-          {this.renderButton(item, config)}
-        </td>
-      </tr>
-    ))
+    if (this.state.btConfig) {
+      return list.map(item => (
+        <tr key={item.id}>
+          {this.renderTds(item, keys)}
+          <td className='actionsColumn'>
+            {this.renderButton(item, config)}
+          </td>
+        </tr>
+      ))
+    } else {
+      return list.map(item => (
+        <tr key={item.id}>
+          {this.renderTds(item, keys)}
+        </tr>
+      ))
+    }
   }
 
   render () {

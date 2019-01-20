@@ -14,6 +14,10 @@ export default class Login extends Component {
     super(props)
     this.state = { ...initialState }
 
+    if (!window.localStorage.getItem('token')) {
+      window.localStorage.setItem('token', '')
+    }
+
     this.login = this.login.bind(this)
     this.updateField = this.updateField.bind(this)
     this.returnLogin = this.returnLogin.bind(this)
@@ -38,9 +42,11 @@ export default class Login extends Component {
     axios.post(`${baseURL}/users/login`, data, config).then(resp => {
       window.localStorage.setItem('token', resp.data.token)
       if (resp.status === 200) {
-        this.setState({ ...this.state, redirect: true })
+        this.setState({ ...this.state })
       }
-    })
+    }).then(resp =>
+      this.setState({ ...this.state, redirect: true })
+    )
   }
 
   returnLogin () {

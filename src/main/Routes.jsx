@@ -5,6 +5,7 @@ import Login from '../component/template/login'
 import Users from '../component/user/users'
 import CreateUser from '../component/user/createUser'
 import Championship from '../component/championship/championships'
+import Matches from '../component/match/matches'
 
 export default props =>
   <Switch>
@@ -12,6 +13,9 @@ export default props =>
     <Route path='/users' component={Users} />
     <Route path='/create' component={CreateUser} />
     <Route path='/championship' component={Championship} />
+    <Route path='/championship/create' component={Championship} />
+    <Route path='/championship/edit' component={Championship} />
+    <Route path='/matches' component={Matches} />
 
     <Redirect from='*' to='/login' />
   </Switch>

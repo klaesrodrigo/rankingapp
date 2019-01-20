@@ -1,12 +1,10 @@
 import React, { Component } from 'react'
-import IconButton from '../template/iconButton'
-import If from '../helpers/if'
 import axios from 'axios'
 import { Redirect } from 'react-router-dom'
 import GenericList from '../template/genericList'
 
 const baseURL = 'http://api-navetest.herokuapp.com/v1'
-const token = window.localStorage.getItem('token')
+let token = window.localStorage.getItem('token')
 const config = {
   headers: {
     'Content-Type': 'application/json',
@@ -18,6 +16,7 @@ const initialState = {
   list: [],
   id: '',
   redirect: false,
+  token: window.localStorage.getItem('token'),
   update: false,
   ok: false
 }
@@ -26,21 +25,21 @@ export default class ListUsers extends Component {
   constructor (props) {
     super(props)
     this.state = { ...initialState }
-
     this.renderRows = this.renderRows.bind(this)
     this.handleRemove = this.handleRemove.bind(this)
     this.handleUpdate = this.handleUpdate.bind(this)
-
+    token = window.localStorage.getItem('token')
     this.handleSearch()
   }
 
-  componentDidMount () {
-    this.handleSearch()
+  componentDidUpdate (prevProps, prevState) {
+    if (prevState.list !== this.state.list) {
+      this.setState({ ...this.state })
+    }
   }
 
   handleSearch () {
     axios.get(`${baseURL}/users`, config).then(resp => {
-      console.log(resp.data)
       this.setState({ ...this.state, list: resp.data, ok: true })
     })
   }
@@ -53,21 +52,6 @@ export default class ListUsers extends Component {
   handleUpdate (user) {
     this.setState({ ...this.state, update: true, id: user.id })
   }
-
-  // renderRows () {
-  //   const list = this.state.list || []
-
-  //   return list.map(user => (
-  //     <tr key={user.id}>
-  //       <td>{user.name}</td>
-  //       <td>{user.rating}</td>
-  //       <td>
-  //         <IconButton estilo='warning' icon='edit' onClick={() => this.handleUpdate(user)} />
-  //         <IconButton estilo='danger' icon='trash-o' onClick={() => this.handleRemove(user)} />
-  //       </td>
-  //     </tr>
-  //   ))
-  // }
 
   renderRows () {
     const list = this.state.list || []
@@ -86,7 +70,8 @@ export default class ListUsers extends Component {
 
   render () {
     if (this.state.update) {
-      return <Redirect to={`create?id=${this.state.id}`} />
+      const id = this.state.id
+      return <Redirect to={`/create?id=${id}`} />
     }
     return (
       <table className='table'>

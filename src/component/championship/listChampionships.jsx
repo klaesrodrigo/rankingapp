@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import GenericList from '../template/genericList'
 import axios from 'axios'
 import { Redirect } from 'react-router-dom'
-import IconButton from '../template/iconButton'
 
 const baseURL = 'http://api-navetest.herokuapp.com/v1/championships'
 const token = window.localStorage.getItem('token')
@@ -19,6 +18,7 @@ const initialState = {
   championship: '',
   redirect: false,
   update: false,
+  create: false,
   ok: false
 }
 
@@ -28,12 +28,20 @@ export default class ListChampionship extends Component {
     this.state = { ...initialState }
 
     this.renderRows = this.renderRows.bind(this)
-    this.handleRemove = this.handleRemove.bind(this)
     this.handleUpdate = this.handleUpdate.bind(this)
     this.updateField = this.updateField.bind(this)
-    this.handleAdd = this.handleAdd.bind(this)
 
     this.handleSearch()
+  }
+
+  componentDidMount () {
+    this.handleSearch()
+  }
+
+  componentDidUpdate (prevProps, prevState) {
+    if (prevState.list !== this.state.list) {
+      this.setState({ ...this.state })
+    }
   }
 
   handleSearch (championship = '') {
@@ -48,43 +56,16 @@ export default class ListChampionship extends Component {
     this.setState({ ...this.state, championship: event.target.value })
   }
 
-  handleRemove (champ) {
-    axios.delete(`${baseURL}/${champ.id}`, config)
-      .then(resp => this.handleSearch(this.state.championship))
-  }
-
   handleUpdate (champ) {
     this.setState({ ...this.state, update: true, id: champ.id })
-  }
-
-  handleAdd () {
-    const data = { name: this.state.championship }
-    axios.post(`${baseURL}`, data, config)
-      .then(resp => this.handleSearch())
-  }
-
-  componentDidMount () {
-    this.handleSearch()
-  }
-
-  componentDidUpdate (prevProps, prevState) {
-    console.table(prevState.list)
-    console.table(this.state.list)
-    if (prevState.list !== this.state.list) {
-      this.setState({ ...this.state })
-    }
   }
 
   renderRows () {
     // const list = this.state.list || []
     const btConfig = [{
-      estilo: 'warning',
-      icon: 'edit',
+      estilo: 'info',
+      icon: 'eye',
       func: (data) => this.handleUpdate(data)
-    }, {
-      estilo: 'danger',
-      icon: 'trash-o',
-      func: (data) => this.handleRemove(data)
     }]
     const keys = ['name']
     return <GenericList dado={this.state.list || []} btConfig={btConfig} keys={keys} />
@@ -92,18 +73,27 @@ export default class ListChampionship extends Component {
 
   render () {
     if (this.state.update) {
-      return <Redirect to={`create?id=${this.state.id}`} />
+      const id = this.state.id
+      return <Redirect to={`/championship/edit?id=${id}`} />
+    }
+    if (this.state.create) {
+      return <Redirect to={`/championship/create`} />
     }
     return (
-      <table className='table'>
-        <thead>
-          <tr>
-            <th>Nome</th>
-            <th className='tableActions'>Ações</th>
-          </tr>
-        </thead>
-        {this.renderRows()}
-      </table>
+      <div>
+        <button className='btn btn-success mb30' onClick={() => this.setState({ ...this.state, create: true })}>
+        Criar Campeonato
+        </button>
+        <table className='table'>
+          <thead>
+            <tr>
+              <th>Nome</th>
+              <th className='tableActions'>Ações</th>
+            </tr>
+          </thead>
+          {this.renderRows()}
+        </table>
+      </div>
     )
   }
 }

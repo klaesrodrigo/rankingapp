@@ -2,6 +2,7 @@
 import React, { Component } from 'react'
 import GenericList from '../template/genericList'
 import axios from 'axios'
+import { Redirect } from 'react-router-dom'
 import IconButton from '../template/iconButton'
 
 const baseURL = 'http://api-navetest.herokuapp.com/v1'
@@ -16,6 +17,7 @@ const config = {
 const initialState = {
   list: [],
   id: '',
+  redirect: false,
   championship: '',
   players: []
 }
@@ -39,12 +41,12 @@ export default class ListChampionship extends Component {
   }
 
   componentDidUpdate (prevProps, prevState) {
-    console.table(this.state.players)
-    console.table(this.state.list)
     if (prevState.list !== this.state.list) {
       this.setState({ ...this.state })
     }
     if (prevState.players !== this.state.players) {
+      const array = this.state.players
+      console.log(array[0].id)
       this.setState({ ...this.state })
     }
   }
@@ -62,9 +64,13 @@ export default class ListChampionship extends Component {
   }
 
   handleAdd () {
-    const data = { name: this.state.championship }
-    axios.post(`${baseURL}/championships`, data, config)
-      .then(resp => this.handleSearch())
+    const camp = { name: this.state.championship }
+    const players = this.state.players
+    const users = players.map(player => player.id)
+    const comp = { name: camp.name, users: users }
+    axios.post(`${baseURL}/championships`, camp, config)
+      .then(resp => axios.put(`${baseURL}/championships/${resp.data.id}`, comp, config)
+        .then(resp => (this.setState({ ...this.state, id: resp.data.id, redirect: true }))))
   }
 
   addUserInChamp (user) {
@@ -108,6 +114,10 @@ export default class ListChampionship extends Component {
   }
 
   render () {
+    if (this.state.redirect) {
+      const id = this.state.id
+      return <Redirect to={`/championship/edit?id=${id}`} />
+    }
     return (
       <div>
         <div role='form' className='form d-flex'>
