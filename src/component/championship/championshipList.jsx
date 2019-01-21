@@ -22,7 +22,7 @@ const initialState = {
   ok: false
 }
 
-export default class ListChampionship extends Component {
+export default class ChampionshipList extends Component {
   constructor (props) {
     super(props)
     this.state = { ...initialState }

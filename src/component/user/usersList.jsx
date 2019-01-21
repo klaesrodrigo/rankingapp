@@ -4,7 +4,7 @@ import { Redirect } from 'react-router-dom'
 import GenericList from '../template/genericList'
 
 const baseURL = 'http://api-navetest.herokuapp.com/v1'
-let token = window.localStorage.getItem('token')
+let token = window.localStorage.getItem('token') || (window.location.search).replace('?token=', '')
 const config = {
   headers: {
     'Content-Type': 'application/json',
@@ -28,7 +28,6 @@ export default class ListUsers extends Component {
     this.renderRows = this.renderRows.bind(this)
     this.handleRemove = this.handleRemove.bind(this)
     this.handleUpdate = this.handleUpdate.bind(this)
-    token = window.localStorage.getItem('token')
     this.handleSearch()
   }
 
@@ -39,6 +38,8 @@ export default class ListUsers extends Component {
   }
 
   handleSearch () {
+    token = window.localStorage.getItem('token') || (window.location.search).replace('?token=', '')
+    console.log(config)
     axios.get(`${baseURL}/users`, config).then(resp => {
       this.setState({ ...this.state, list: resp.data, ok: true })
     })

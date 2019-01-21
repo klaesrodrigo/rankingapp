@@ -2,7 +2,7 @@ import React from 'react'
 
 import Menu from '../template/menu'
 import PageHeader from '../template/pageHeader'
-import List from './listChampionships'
+import List from './championshipList'
 import Create from './championshipCreate'
 import Edit from './championshipEdit'
 

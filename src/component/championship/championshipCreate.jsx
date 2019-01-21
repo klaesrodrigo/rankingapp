@@ -22,7 +22,7 @@ const initialState = {
   players: []
 }
 
-export default class ListChampionship extends Component {
+export default class ChampionshipList extends Component {
   constructor (props) {
     super(props)
     this.state = { ...initialState }
@@ -45,8 +45,6 @@ export default class ListChampionship extends Component {
       this.setState({ ...this.state })
     }
     if (prevState.players !== this.state.players) {
-      const array = this.state.players
-      console.log(array[0].id)
       this.setState({ ...this.state })
     }
   }
@@ -75,13 +73,11 @@ export default class ListChampionship extends Component {
 
   addUserInChamp (user) {
     let newList = this.removeUser(this.state.list, user)
-    console.log(user)
     this.setState({ ...this.state, list: newList, players: [...this.state.players, user] })
   }
 
   removeUserInChamp (user) {
     let newList = this.removeUser(this.state.players, user)
-    console.log(user)
     this.setState({ ...this.state, players: newList, list: [...this.state.list, user] })
   }
 

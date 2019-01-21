@@ -67,7 +67,6 @@ export default class CreateUser extends Component {
     config.headers.Authorization = `Bearer ${token}`
 
     axios.put(`${baseURL}/users/${this.state.user.id}`, data, config).then(resp => {
-      console.log(resp.data)
       if (resp.status === 200) {
         this.setState({ ...this.state, update: true })
       }

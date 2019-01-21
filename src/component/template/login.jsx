@@ -1,11 +1,11 @@
 import React, { Component } from 'react'
 import axios from 'axios'
-import { Redirect } from 'react-router-dom'
-import { Link } from 'react-router-dom'
+import { Redirect, Link } from 'react-router-dom'
 
 const initialState = {
   user: { email: '', password: '' },
-  redirect: false
+  redirect: false,
+  token: ''
 }
 const baseURL = 'http://api-navetest.herokuapp.com/v1'
 
@@ -25,7 +25,6 @@ export default class Login extends Component {
 
   updateField (event) {
     const user = { ...this.state.user }
-    console.log(event.target.name)
     user[event.target.name] = event.target.value
     this.setState({ user })
   }
@@ -38,15 +37,10 @@ export default class Login extends Component {
         'Content-Type': 'application/json'
       }
     }
-    console.log(data)
     axios.post(`${baseURL}/users/login`, data, config).then(resp => {
       window.localStorage.setItem('token', resp.data.token)
-      if (resp.status === 200) {
-        this.setState({ ...this.state })
-      }
-    }).then(resp =>
-      this.setState({ ...this.state, redirect: true })
-    )
+      this.setState({ ...this.state, token: resp.data.token, redirect: true })
+    })
   }
 
   returnLogin () {
@@ -70,7 +64,7 @@ export default class Login extends Component {
 
   render () {
     if (this.state.redirect) {
-      return <Redirect to='/users' />
+      return <Redirect to={`/users?token=${this.state.token}`} />
     }
     return (
       this.returnLogin()

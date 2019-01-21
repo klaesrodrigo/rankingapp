@@ -34,7 +34,6 @@ export default class ChampionshipEdit extends Component {
   }
 
   componentDidUpdate (prevProps, prevState) {
-    console.log(this.state)
     if (prevState.matches !== this.state.matches) {
       this.setState({ ...this.state })
     }
@@ -44,8 +43,6 @@ export default class ChampionshipEdit extends Component {
     const matches = this.state.matches
     const id = event.target.id
     let newMatches = matches.map(match => {
-      console.log(id)
-      console.log(match.id === id)
       if (match.id === id) {
         if (event.target.name === 'score_1') {
           match.score_1 = event.target.value
@@ -71,8 +68,6 @@ export default class ChampionshipEdit extends Component {
   addScore (match) {
     let score = { score: match.score_1 }
     let nScore = (match.score_1).split(' ')
-    console.log(nScore.length)
-    console.log(nScore)
     if (nScore[0] === nScore[2] || match.score_1 === '' || nScore.length !== 3 || nScore[0] === '' || nScore[2] === '') {
       window.alert('Insira o placar corretamente!')
     }
@@ -81,7 +76,6 @@ export default class ChampionshipEdit extends Component {
     } else if (Number(nScore[0]) < Number(nScore[2])) {
       score.winner_id = match.users[1].id
     }
-    console.log(score)
     axios.put(`${baseURL}/matches/${match.id}`, score, config).then(resp => this.handleSearch())
   }
 

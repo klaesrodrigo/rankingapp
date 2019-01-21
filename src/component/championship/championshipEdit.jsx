@@ -40,7 +40,6 @@ export default class ChampionshipEdit extends Component {
     const id = this.state.campId
     axios.get(`${baseURL}/championships/${id}`, config)
       .then(resp => {
-        console.log(resp)
         if ((resp.data.users).length === 0) {
           window.alert('Campeonato não iniciado')
         }
@@ -54,7 +53,6 @@ export default class ChampionshipEdit extends Component {
   handleRemove () {
     axios.delete(`${baseURL}/championships/${this.state.campId}`, config)
       .then(resp => {
-        console.log(resp)
         return this.setState({ ...this.state, delete: false })
       })
   }
